@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import cases from "./cases.json";
-import { hasProblemsUnder, makeValidator } from "./validate.ts";
+import { hasProblemsUnder, makeValidator, readDefinition } from "./validate.ts";
 
 const ruleset = makeValidator(cases.schemas["payroll-ruleset"]);
 const formula = makeValidator(cases.schemas["payroll-formula"]);
@@ -64,5 +64,27 @@ describe("hasProblemsUnder", () => {
     expect(hasProblemsUnder(problems, "$.branches[1].then")).toBe(true);
     expect(hasProblemsUnder(problems, "$.branches[1].when")).toBe(false);
     expect(hasProblemsUnder({ "$.branches[10]": [] }, "$.branches[1]")).toBe(false);
+  });
+});
+
+describe("readDefinition", () => {
+  it("takes text that parses and validates", () => {
+    expect(readDefinition('{"branches": [], "otherwise": 1}', ruleset)).toEqual({
+      ok: true,
+      definition: { branches: [], otherwise: 1 },
+    });
+  });
+
+  it("says text is not JSON, or where it first fails", () => {
+    expect(readDefinition('{"branches": [', ruleset)).toEqual({
+      ok: false,
+      path: null,
+      problem: null,
+    });
+    expect(readDefinition('{"branches": [], "otherwise": "salaryy"}', ruleset)).toMatchObject({
+      ok: false,
+      path: "$.otherwise",
+      problem: { keyword: "invalid" },
+    });
   });
 });

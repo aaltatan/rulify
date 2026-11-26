@@ -40,6 +40,12 @@ const WORDS = {
   rail: { ar: "قائمة", en: "Rail" },
   sentence: { ar: "جمل", en: "Sentence" },
   tree: { ar: "شجرة", en: "Tree" },
+  code: { ar: "شيفرة", en: "Code" },
+  definitionJson: { ar: "التعريف بصيغة JSON", en: "The definition as JSON" },
+  codeHint: {
+    ar: "يُؤخذ النص حين يكون JSON صالحًا يطابق المخطط.",
+    en: "The text is taken once it is JSON that matches the schema.",
+  },
   start: { ar: "البداية", en: "Start" },
   theValue: { ar: "القيمة", en: "The value" },
   close: { ar: "أغلق", en: "Close" },

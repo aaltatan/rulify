@@ -9,6 +9,7 @@ import { emptyRuleset } from "../core/ruleset.ts";
 import type { Json, Path } from "../core/tree.ts";
 import { makeValidator, type Problem } from "../core/validate.ts";
 import { GHOST_BUTTON, Icon, Logo, Segmented } from "./controls.tsx";
+import { CodeLook } from "./looks/code.tsx";
 import { Rail } from "./looks/rail.tsx";
 import { SentenceCondition, SentenceRules } from "./looks/sentence.tsx";
 import { TreeRules } from "./looks/tree.tsx";
@@ -25,7 +26,8 @@ const LOOKS = {
   tree: { Rules: TreeRules, Condition: PredicateNode },
 } as const satisfies Record<string, Look>;
 
-type LookName = keyof typeof LOOKS;
+/** The code view edits the whole definition as text, so it is not a `Look`. */
+type LookName = keyof typeof LOOKS | "code";
 
 function emptyOf(kind: Kind): Json {
   if (kind === "ruleset") return emptyRuleset() as Json;
@@ -52,9 +54,11 @@ export function App() {
 
   const kinds = useMemo(() => subschemas(root), [root]);
   const schema = kinds[kind];
-  const catalog = useMemo(() => (schema ? readSchema(schema) : null), [schema]);
-  const validate = useMemo(() => (schema ? makeValidator(schema) : null), [schema]);
-  const problems = useMemo(() => validate?.(definition) ?? {}, [validate, definition]);
+  const open = useMemo(
+    () => (schema ? { catalog: readSchema(schema), validate: makeValidator(schema) } : null),
+    [schema],
+  );
+  const problems = useMemo(() => open?.validate(definition) ?? {}, [open, definition]);
   const problemCount = Object.values(problems).flat().length;
 
   const choose = (next: Kind) => {
@@ -130,7 +134,7 @@ export function App() {
   let readsAs = "";
 
   try {
-    readsAs = catalog ? describe(kind, definition) : "";
+    readsAs = open ? describe(kind, definition) : "";
   } catch {
     // a definition mid-edit may not describe yet; its problems say why
   }
@@ -157,7 +161,7 @@ export function App() {
         </div>
       </header>
       <main className="mx-auto grid w-full max-w-7xl flex-1 content-start gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,30rem)] lg:gap-8">
-        {!catalog ? (
+        {!open ? (
           <div className="lg:col-span-2">
             <SchemaDrop lang={lang} onOpen={openSchema} />
           </div>
@@ -176,7 +180,7 @@ export function App() {
                 <Segmented
                   label={t(lang, "look")}
                   value={look}
-                  options={(Object.keys(LOOKS) as LookName[]).map(
+                  options={([...Object.keys(LOOKS), "code"] as LookName[]).map(
                     (name) => [name, t(lang, name)] as const,
                   )}
                   onChange={setLook}
@@ -208,26 +212,31 @@ export function App() {
               )}
               <EditorContext
                 value={{
-                  catalog,
+                  catalog: open.catalog,
                   lang,
                   problems,
                   tree: definition,
                   change: setDefinition,
                   target,
                   setTarget,
-                  Rules: LOOKS[look].Rules,
+                  validate: open.validate,
+                  Rules: look === "code" ? Rail : LOOKS[look].Rules,
                 }}
               >
                 <div
                   className={
-                    kind === "predicate"
+                    kind === "predicate" || look === "code"
                       ? ""
                       : "grid gap-4 xl:grid-cols-[16rem_minmax(0,1fr)] xl:items-start"
                   }
                 >
-                  {kind !== "predicate" && <Palette />}
+                  {kind !== "predicate" && look !== "code" && <Palette />}
                   <div className="min-w-0">
-                    <Root kind={kind} Condition={LOOKS[look].Condition} />
+                    {look === "code" ? (
+                      <CodeLook />
+                    ) : (
+                      <Root kind={kind} Condition={LOOKS[look].Condition} />
+                    )}
                   </div>
                 </div>
               </EditorContext>

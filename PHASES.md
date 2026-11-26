@@ -59,8 +59,11 @@
   switch.
 
 ## Phase 5 — Code view
-- [ ] A JSON editor synced with the visual looks; accepts only what validates (pick the editor
-      library here; prefer a light one)
+- [x] A JSON editor synced with the visual looks; accepts only what validates (`readDefinition`
+      in `validate.ts`; the first problem shows under the text until it does)
+- [x] Editor library: none. A plain textarea is enough for definition JSON and adds no
+      dependency; revisit (CodeMirror 6 is the light choice) only if people ask for highlighting
+      or folding
 
 ## Phase 6 — Output, languages, drafts
 - [ ] Copy / download JSON; Python code view with copy

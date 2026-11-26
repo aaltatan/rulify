@@ -30,7 +30,7 @@ import {
 import type { Catalog, Kind, Param } from "../core/reader.ts";
 import { moveBranch, type Ruleset, removeBranch, setLabel } from "../core/ruleset.ts";
 import { at, type Json, type Path, pathKey, setAt } from "../core/tree.ts";
-import type { Problems } from "../core/validate.ts";
+import type { Problems, Validator } from "../core/validate.ts";
 import {
   ADD_BUTTON,
   ICON_BUTTON,
@@ -47,6 +47,8 @@ export type Editor = {
   catalog: Catalog;
   lang: Lang;
   problems: Problems;
+  /** The schema's validator, for text the code view must check before taking it. */
+  validate: Validator;
   tree: Json;
   change: (tree: Json) => void;
   /** The value the palette fills, chosen by focusing it. */

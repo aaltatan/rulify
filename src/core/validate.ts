@@ -89,3 +89,24 @@ export function hasProblemsUnder(problems: Problems, key: string): boolean {
     (path) => path === key || path.startsWith(`${key}.`) || path.startsWith(`${key}[`),
   );
 }
+
+/** What the code view makes of typed text: a definition to take, or why not (null: not JSON). */
+export type Reading =
+  | { ok: true; definition: Json }
+  | { ok: false; path: string; problem: Problem }
+  | { ok: false; path: null; problem: null };
+
+/** Typed JSON is taken only when it parses and validates; else the first problem says why. */
+export function readDefinition(text: string, validate: Validator): Reading {
+  let definition: Json;
+
+  try {
+    definition = JSON.parse(text) as Json;
+  } catch {
+    return { ok: false, path: null, problem: null };
+  }
+
+  const [path, list] = Object.entries(validate(definition))[0] ?? [];
+
+  return path && list?.[0] ? { ok: false, path, problem: list[0] } : { ok: true, definition };
+}
