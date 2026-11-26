@@ -28,11 +28,16 @@
 - [x] Publish pyruleset 0.2.1 (root `$ref` in `allOf` for Ajv), on PyPI and GitHub `main`
 
 ## Phase 2 — Core (pure logic, Vitest against cases.json)
-- [ ] `reader.ts`: schema → catalog by `x-kind`; labels in the chosen language
-- [ ] `formula.ts`, `predicate.ts`, `ruleset.ts`: tree operations (port from salariez)
-- [ ] `validate.ts`: Ajv Draft 2020-12, errors keyed by JSON path
-- [ ] `describe.ts` ("Reads as") and `python.ts` (code export) equal to the cases
-- [ ] `drafts.ts`, `i18n.ts`
+- [x] `reader.ts`: schema → catalog by `x-kind`; labels in the chosen language (`textIn` in `i18n.ts`)
+- [x] `formula.ts`, `predicate.ts`, `ruleset.ts`: tree operations (port from salariez), on the
+      shared JSON paths of `tree.ts`; every edit is checked to stay valid
+- [x] `validate.ts`: Ajv Draft 2020-12, errors keyed by JSON path (`$.branches[0].when`), on the
+      deepest node, other rules' complaints dropped
+- [x] `describe.ts` ("Reads as") and `python.ts` (code export) equal to the cases (all 20)
+- [x] `drafts.ts`, `i18n.ts`
+- Known limit: a call with a required positional argument left out of both `args` and `kwargs`
+  passes the schema (it cannot require one of the two); Python's compiler reports it. New calls
+  always fill required arguments.
 
 ## Phase 3 — Shell and the rail look
 - [ ] Open a schema (paste / upload), open a definition, choose the root kind

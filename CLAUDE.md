@@ -125,6 +125,7 @@ Shapes rulify relies on:
 ```
 scripts/export_cases.py   writes src/core/cases.json from the Python libraries (pnpm sync)
 src/core/                 pure logic, no React; every module has a .test.ts
+  tree.ts                 JSON paths shared by the three kinds: at, setAt, pathKey (`$.a[0].b`)
   reader.ts               JSON Schema → catalog (kinds, variables, rules, operators, functions, labels)
   formula.ts              formula tree operations (from salariez formula-tree.ts)
   predicate.ts            predicate tree operations (from salariez query-tree.ts)

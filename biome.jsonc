@@ -5,6 +5,10 @@
   "files": { "includes": ["**", "!pnpm-lock.yaml", "!src/core/cases.json"] },
   "css": { "parser": { "tailwindDirectives": true } },
   "formatter": { "enabled": true, "indentStyle": "space", "indentWidth": 2, "lineWidth": 100 },
-  "linter": { "enabled": true, "rules": { "preset": "recommended" } },
+  // `then` is pyruleset's branch key, not a thenable
+  "linter": {
+    "enabled": true,
+    "rules": { "preset": "recommended", "suspicious": { "noThenProperty": "off" } }
+  },
   "assist": { "enabled": true, "actions": { "source": { "organizeImports": "on" } } }
 }
