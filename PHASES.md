@@ -74,5 +74,6 @@
       `restoreDraft`; the language is remembered apart)
 
 ## Phase 7 — Release
-- [ ] GitHub repository `aaltatan/rulify`, deploy to rulify.surge.sh
-- [ ] README: how to export a schema from Python (3-line script), the looks, the output
+- [x] GitHub repository `aaltatan/rulify` (public, like schemify), deployed to rulify.surge.sh
+      (2026-11-26; redeploy with `pnpm build && surge dist rulify.surge.sh`)
+- [x] README: how to export a schema from Python (3-line script), the looks, the output
