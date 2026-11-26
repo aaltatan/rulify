@@ -133,7 +133,7 @@ src/core/                 pure logic, no React; every module has a .test.ts
   validate.ts             Ajv (Draft 2020-12), errors keyed by JSON path
   describe.ts             the "Reads as" line, equal to what Python prints
   python.ts               the definition as Python code
-  drafts.ts               localStorage drafts (every call in try/catch)
+  drafts.ts               localStorage drafts and the language (every call in try/catch)
   i18n.ts                 the ar / en dictionary and direction
 src/ui/                   React
   app.tsx                 shell: open schema, open definition, root kind, look switch, output
@@ -141,6 +141,7 @@ src/ui/                   React
   nodes.tsx               node editors every look shares (EditorContext, ValueNode, PredicateNode,
                           CaseTools, Root); a `Look` is its `Rules` and `Condition` drawings
   looks/rail.tsx, looks/sentence.tsx, looks/tree.tsx, looks/code.tsx
+  output.tsx              the blueprint panel: JSON / Python, copy, download
   palette.tsx, controls.tsx
 ```
 

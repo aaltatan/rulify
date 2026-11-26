@@ -101,6 +101,12 @@ const WORDS = {
   problems: { ar: "مشكلات", en: "Problems" },
   valid: { ar: "صالح", en: "Valid" },
   definition: { ar: "التعريف", en: "Definition" },
+  output: { ar: "الناتج", en: "Output" },
+  copy: { ar: "انسخ", en: "Copy" },
+  copied: { ar: "نُسخ", en: "Copied" },
+  copyFailed: { ar: "تعذّر النسخ", en: "Could not copy" },
+  download: { ar: "نزّل", en: "Download" },
+  draftRestored: { ar: "فُتحت مسودتك الأخيرة.", en: "Your last draft was opened." },
   // formula operators and functions: the libraries do not label them
   add: { ar: "زائد", en: "Plus" },
   subtract: { ar: "ناقص", en: "Minus" },

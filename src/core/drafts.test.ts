@@ -1,5 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { clearDraft, loadDraft, saveDraft } from "./drafts.ts";
+import cases from "./cases.json";
+import {
+  clearDraft,
+  type Draft,
+  loadDraft,
+  loadLang,
+  restoreDraft,
+  saveDraft,
+  saveLang,
+} from "./drafts.ts";
 
 function memoryStorage(): Storage {
   const items = new Map<string, string>();
@@ -22,8 +31,12 @@ describe("drafts", () => {
   it("saves, loads and clears a draft", () => {
     vi.stubGlobal("localStorage", memoryStorage());
 
-    expect(saveDraft({ "x-kind": "formula" }, 1)).toBe(true);
-    expect(loadDraft()).toMatchObject({ schema: { "x-kind": "formula" }, definition: 1 });
+    expect(saveDraft({ "x-kind": "formula" }, "formula", 1)).toBe(true);
+    expect(loadDraft()).toMatchObject({
+      schema: { "x-kind": "formula" },
+      kind: "formula",
+      definition: 1,
+    });
 
     clearDraft();
 
@@ -33,7 +46,7 @@ describe("drafts", () => {
   it("never throws when storage is missing or full", () => {
     vi.stubGlobal("localStorage", undefined);
 
-    expect(saveDraft({}, 1)).toBe(false);
+    expect(saveDraft({}, "formula", 1)).toBe(false);
     expect(loadDraft()).toBeNull();
     expect(() => clearDraft()).not.toThrow();
 
@@ -44,7 +57,22 @@ describe("drafts", () => {
       },
     });
 
-    expect(saveDraft({}, 1)).toBe(false);
+    expect(saveDraft({}, "formula", 1)).toBe(false);
+  });
+
+  it("remembers the language, Arabic by default", () => {
+    vi.stubGlobal("localStorage", memoryStorage());
+
+    expect(loadLang()).toBe("ar");
+
+    saveLang("en");
+
+    expect(loadLang()).toBe("en");
+
+    vi.stubGlobal("localStorage", undefined);
+
+    expect(loadLang()).toBe("ar");
+    expect(() => saveLang("en")).not.toThrow();
   });
 
   it("ignores a stored draft that is not JSON", () => {
@@ -53,5 +81,33 @@ describe("drafts", () => {
     vi.stubGlobal("localStorage", storage);
 
     expect(loadDraft()).toBeNull();
+  });
+});
+
+describe("restoreDraft", () => {
+  const schema = cases.schemas["payroll-ruleset"];
+  const draft = (kind: Draft["kind"], definition: unknown): Draft => ({
+    schema,
+    kind,
+    definition,
+    savedAt: "",
+  });
+
+  it("opens a draft whose definition is of its kind, problems inside kept", () => {
+    expect(restoreDraft(draft("formula", "salary"))).toEqual({
+      schema,
+      kind: "formula",
+      definition: "salary",
+    });
+    expect(restoreDraft(draft("formula", { round: "salary", ndigits: 2.5 }))).not.toBeNull();
+  });
+
+  it("refuses a draft of the wrong kind, a kind the schema lacks, or no schema", () => {
+    expect(restoreDraft(draft("ruleset", "salary"))).toBeNull();
+    expect(
+      restoreDraft({ ...draft("formula", 1), schema: cases.schemas["payroll-predicate"] }),
+    ).toBeNull();
+    expect(restoreDraft({ ...draft("formula", 1), schema: { type: "object" } })).toBeNull();
+    expect(restoreDraft(null)).toBeNull();
   });
 });

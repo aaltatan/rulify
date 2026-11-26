@@ -33,6 +33,9 @@ const PATHS = {
   plus: "M12 5v14M5 12h14",
   upload: "M12 16V4M7 9l5-5 5 5M5 20h14",
   group: "M8 4H5v16h3M16 4h3v16h-3",
+  check: "M5 12.5l4.5 4.5L19 7.5",
+  copy: "M9 9h10v10H9zM5 15V5h10",
+  download: "M12 4v11M7 10l5 5 5-5M5 20h14",
 } as const;
 
 export function Icon({

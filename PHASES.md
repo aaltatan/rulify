@@ -66,8 +66,12 @@
       or folding
 
 ## Phase 6 — Output, languages, drafts
-- [ ] Copy / download JSON; Python code view with copy
-- [ ] Arabic and English with RTL / LTR; autosaved drafts
+- [x] Copy / download JSON; Python code view with copy (the blueprint's JSON / Python tabs,
+      `output.tsx`; download gives `<kind>.json` or `<kind>.py`; both wait until there are no
+      problems)
+- [x] Arabic and English with RTL / LTR; autosaved drafts (every change saves the schema, the
+      kind and the definition; a draft opens again only if it still fits its schema,
+      `restoreDraft`; the language is remembered apart)
 
 ## Phase 7 — Release
 - [ ] GitHub repository `aaltatan/rulify`, deploy to rulify.surge.sh

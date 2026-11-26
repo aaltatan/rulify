@@ -2,6 +2,14 @@
 // edit it in the rail look, read it back ("Reads as") and see its JSON printed beside it.
 import { useEffect, useId, useMemo, useState } from "react";
 import { describe } from "../core/describe.ts";
+import {
+  clearDraft,
+  loadDraft,
+  loadLang,
+  restoreDraft,
+  saveDraft,
+  saveLang,
+} from "../core/drafts.ts";
 import { dirOf, type Lang, problemText, t } from "../core/i18n.ts";
 import { emptyGroup } from "../core/predicate.ts";
 import { type Kind, readSchema, SchemaError, subschemas } from "../core/reader.ts";
@@ -15,6 +23,7 @@ import { SentenceCondition, SentenceRules } from "./looks/sentence.tsx";
 import { TreeRules } from "./looks/tree.tsx";
 import { EditorContext, type Look, PredicateNode, Root } from "./nodes.tsx";
 import { readJsonFile, SchemaDrop } from "./open.tsx";
+import { Blueprint } from "./output.tsx";
 import { Palette } from "./palette.tsx";
 
 const KIND_ORDER: readonly Kind[] = ["ruleset", "predicate", "formula"];
@@ -38,19 +47,29 @@ function emptyOf(kind: Kind): Json {
 }
 
 export function App() {
-  const [lang, setLang] = useState<Lang>("ar");
-  const [root, setRoot] = useState<unknown>(null);
-  const [kind, setKind] = useState<Kind>("ruleset");
+  const [lang, setLang] = useState<Lang>(loadLang);
+  // the last draft, checked against its own schema before it is opened again
+  const [restored] = useState(() => restoreDraft(loadDraft()));
+  const [root, setRoot] = useState<unknown>(restored?.schema ?? null);
+  const [kind, setKind] = useState<Kind>(restored?.kind ?? "ruleset");
   const [look, setLook] = useState<LookName>("rail");
-  const [definition, setDefinition] = useState<Json>(null);
+  const [definition, setDefinition] = useState<Json>(restored?.definition ?? null);
   const [target, setTarget] = useState<Path | null>(null);
   const [openError, setOpenError] = useState<string | null>(null);
+  const [notice, setNotice] = useState(restored !== null);
   const definitionId = useId();
 
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = dirOf(lang);
+    saveLang(lang);
   }, [lang]);
+
+  // autosave: every change is the draft; closing the schema drops it
+  useEffect(() => {
+    if (root) saveDraft(root, kind, definition);
+    else clearDraft();
+  }, [root, kind, definition]);
 
   const kinds = useMemo(() => subschemas(root), [root]);
   const schema = kinds[kind];
@@ -66,6 +85,7 @@ export function App() {
     setDefinition(emptyOf(next));
     setTarget(null);
     setOpenError(null);
+    setNotice(false);
   };
 
   const openSchema = (candidate: unknown): string | null => {
@@ -205,6 +225,11 @@ export function App() {
                   </button>
                 </span>
               </div>
+              {notice && (
+                <p role="status" className="text-sm text-ink-muted">
+                  {t(lang, "draftRestored")}
+                </p>
+              )}
               {openError && (
                 <p role="alert" className="text-sm text-danger">
                   {openError}
@@ -271,26 +296,12 @@ export function App() {
                 </section>
               )}
             </div>
-            <aside
-              aria-label={t(lang, "definition")}
-              className="flex min-h-[20rem] flex-col overflow-hidden rounded-[6px] border border-print-rule bg-print text-print-ink shadow-[0_10px_30px_-12px_oklch(0.2_0.06_258/0.45)] lg:sticky lg:top-20 lg:max-h-[calc(100vh-7rem)] lg:self-start"
-            >
-              <div className="flex items-center gap-2.5 border-b border-print-rule px-4 py-2.5">
-                <span
-                  className={`size-2 shrink-0 rounded-full ${problemCount ? "bg-[oklch(0.72_0.16_25)]" : "bg-[oklch(0.78_0.13_160)]"}`}
-                  aria-hidden="true"
-                />
-                <span className="text-xs text-print-ink/75" role="status">
-                  {problemCount ? `${t(lang, "problems")}: ${problemCount}` : t(lang, "valid")}
-                </span>
-              </div>
-              <pre
-                dir="ltr"
-                className="min-h-0 flex-1 overflow-auto p-4 font-mono text-xs leading-relaxed"
-              >
-                {JSON.stringify(definition, null, 2)}
-              </pre>
-            </aside>
+            <Blueprint
+              lang={lang}
+              kind={kind}
+              definition={definition}
+              problemCount={problemCount}
+            />
           </>
         )}
       </main>
