@@ -50,27 +50,48 @@ export function readSchema(root: unknown): Catalog {
   }
 
   const kind = root["x-kind"] as Kind;
-  const defs = (root.$defs ?? {}) as Record<string, Schema>;
-  const formula = kind === "formula" ? root : kind === "ruleset" ? defs.value : undefined;
+  const { predicate, formula } = subschemas(root);
   const whenNode = formula
-    ? formulaNodes(formula).find((node) => "when" in props(node))
+    ? formulaNodes(formula as Schema).find((node) => "when" in props(node))
     : undefined;
-  const predicate =
-    kind === "predicate"
-      ? root
-      : kind === "ruleset"
-        ? defs.condition
-        : ((whenNode?.$defs as Record<string, Schema> | undefined)?.["when-condition"] ??
-          undefined);
 
   return {
     kind,
-    rules: predicate ? readRules(predicate) : [],
-    variables: formula ? readVariables(formula) : [],
-    operators: formula ? readOperators(formula) : [],
-    functions: formula ? readFunctions(formula) : [],
+    rules: predicate ? readRules(predicate as Schema) : [],
+    variables: formula ? readVariables(formula as Schema) : [],
+    operators: formula ? readOperators(formula as Schema) : [],
+    functions: formula ? readFunctions(formula as Schema) : [],
     when: whenNode !== undefined,
   };
+}
+
+/**
+ * The schema for each kind this schema can edit: a ruleset embeds its condition and value
+ * schemas, a formula with `when` nodes embeds its condition schema. Each carries its own
+ * `x-kind` and compiles on its own.
+ */
+export function subschemas(root: unknown): Partial<Record<Kind, object>> {
+  if (!isObject(root)) return {};
+
+  const defs = (root.$defs ?? {}) as Record<string, Schema>;
+  const whenNode = formulaNodes(root).find((node) => "when" in props(node));
+  const found: Record<Kind, Schema | undefined> = {
+    ruleset: undefined,
+    predicate: undefined,
+    formula: undefined,
+  };
+
+  if (root["x-kind"] === "ruleset") {
+    Object.assign(found, { ruleset: root, predicate: defs.condition, formula: defs.value });
+  } else if (root["x-kind"] === "formula") {
+    const condition = (whenNode?.$defs as Record<string, Schema> | undefined)?.["when-condition"];
+
+    Object.assign(found, { formula: root, predicate: condition });
+  } else if (root["x-kind"] === "predicate") {
+    found.predicate = root;
+  }
+
+  return Object.fromEntries(Object.entries(found).filter(([, schema]) => isObject(schema)));
 }
 
 // -----------------------

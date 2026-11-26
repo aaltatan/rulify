@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import cases from "./cases.json";
-import { readSchema, SchemaError } from "./reader.ts";
+import { readSchema, SchemaError, subschemas } from "./reader.ts";
 
 const { schemas } = cases;
 
@@ -71,5 +71,27 @@ describe("readSchema", () => {
   it("refuses a schema that is not from the libraries", () => {
     expect(() => readSchema({ type: "object" })).toThrow(SchemaError);
     expect(() => readSchema([])).toThrow(SchemaError);
+  });
+});
+
+describe("subschemas", () => {
+  it("finds the schema for each kind a schema can edit", () => {
+    const kinds = (name: keyof typeof schemas) =>
+      Object.entries(subschemas(schemas[name])).map(([kind, schema]) => [
+        kind,
+        (schema as Record<string, unknown>)["x-kind"],
+      ]);
+
+    expect(kinds("payroll-ruleset")).toEqual([
+      ["ruleset", "ruleset"],
+      ["predicate", "predicate"],
+      ["formula", "formula"],
+    ]);
+    expect(kinds("payroll-formula")).toEqual([
+      ["predicate", "predicate"],
+      ["formula", "formula"],
+    ]);
+    expect(kinds("payroll-predicate")).toEqual([["predicate", "predicate"]]);
+    expect(subschemas({ type: "object" })).toEqual({});
   });
 });

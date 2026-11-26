@@ -40,9 +40,15 @@
   always fill required arguments.
 
 ## Phase 3 — Shell and the rail look
-- [ ] Open a schema (paste / upload), open a definition, choose the root kind
-- [ ] Rail + palette for rulesets, predicates and formulas, including nested `when`
-- [ ] Errors on the node; the "Reads as" line
+- [x] Open a schema (paste / upload / drop, or the payroll sample), open a definition (it opens
+      as the first kind it validates as), choose the root kind (each kind's schema is the one the
+      libraries embed: `subschemas` in `reader.ts`)
+- [x] Rail + palette for rulesets, predicates and formulas, including nested `when`
+- [x] Errors on the node; the "Reads as" line (plus a problems list and the JSON printed
+      read-only beside the sheet; copy / download come in Phase 6)
+- Left for later: cases do not fold or drag yet (move buttons only); list and object arguments
+  show as JSON, edited in the code view (Phase 5); an absent optional keyword argument cannot be
+  added from the rail.
 
 ## Phase 4 — Sentence and tree looks
 - [ ] Sentence look; tree look; a switch between the looks over the same data

@@ -33,6 +33,55 @@ const WORDS = {
   any: { ar: "أي مما يلي", en: "Any of" },
   readsAs: { ar: "تُقرأ", en: "Reads as" },
   byCondition: { ar: "حسب الشرط", en: "By condition" },
+  // the shell, the rail and the palette
+  kind: { ar: "ما تبنيه", en: "What you build" },
+  language: { ar: "اللغة", en: "Language" },
+  openSchema: { ar: "افتح مخططًا", en: "Open a schema" },
+  dropSchema: {
+    ar: "أفلت ملف المخطط هنا، أو اختره، أو الصقه في المربع.",
+    en: "Drop the schema file here, choose it, or paste it in the box.",
+  },
+  chooseFile: { ar: "اختر ملفًا", en: "Choose file" },
+  pasteSchema: { ar: "الصق المخطط (JSON)", en: "Paste the schema (JSON)" },
+  open: { ar: "افتح", en: "Open" },
+  trySample: { ar: "جرّب مثال الرواتب", en: "Try the payroll sample" },
+  notJson: { ar: "هذا النص ليس JSON صالحًا.", en: "This text is not valid JSON." },
+  notRulify: {
+    ar: "هذا ليس مخطط rulify: لا يذكر الجذر نوعه (x-kind).",
+    en: "This is not a rulify schema: its root does not say its kind (x-kind).",
+  },
+  badSchema: { ar: "تعذّر قراءة هذا المخطط:", en: "This schema could not be read:" },
+  otherSchema: { ar: "مخطط آخر", en: "Another schema" },
+  openDefinition: { ar: "افتح تعريفًا", en: "Open a definition" },
+  definitionRefused: {
+    ar: "لا يطابق هذا التعريف المخطط:",
+    en: "This definition does not match the schema:",
+  },
+  addCase: { ar: "أضف حالة", en: "Add a case" },
+  caseLabel: { ar: "اسم الحالة (اختياري)", en: "Name of the case (optional)" },
+  case: { ar: "الحالة", en: "Case" },
+  moveUp: { ar: "انقل للأعلى", en: "Move up" },
+  moveDown: { ar: "انقل للأسفل", en: "Move down" },
+  remove: { ar: "احذف", en: "Remove" },
+  addCondition: { ar: "أضف شرطًا…", en: "Add a condition…" },
+  addGroup: { ar: "أضف مجموعة", en: "Add a group" },
+  noConditions: { ar: "لا شروط بعد: تصح دائمًا.", en: "No conditions yet: always true." },
+  addTerm: { ar: "أضف حدًا", en: "Add a term" },
+  decimals: { ar: "المنازل العشرية", en: "Decimal places" },
+  number: { ar: "رقم", en: "Number" },
+  variable: { ar: "متغير", en: "Variable" },
+  variables: { ar: "المتغيرات", en: "Variables" },
+  operations: { ar: "العمليات", en: "Operations" },
+  functions: { ar: "الدوال", en: "Functions" },
+  search: { ar: "ابحث", en: "Search" },
+  paletteHint: {
+    ar: "اختر قيمة، ثم اضغط قطعة لتضعها فيها.",
+    en: "Choose a value, then press a piece to put it there.",
+  },
+  insert: { ar: "أدرج", en: "Insert" },
+  problems: { ar: "مشكلات", en: "Problems" },
+  valid: { ar: "صالح", en: "Valid" },
+  definition: { ar: "التعريف", en: "Definition" },
   // formula operators and functions: the libraries do not label them
   add: { ar: "زائد", en: "Plus" },
   subtract: { ar: "ناقص", en: "Minus" },
@@ -62,4 +111,9 @@ export type Word = keyof typeof WORDS;
 /** rulify's own word for `key`; an unknown key (a function nobody named yet) is returned as is. */
 export function t(lang: Lang, key: string): string {
   return key in WORDS ? WORDS[key as Word][lang] : key;
+}
+
+/** A validation problem in `lang`: rulify's sentence for its keyword, else Ajv's English. */
+export function problemText(lang: Lang, keyword: string, message: string): string {
+  return keyword in WORDS ? t(lang, keyword) : message;
 }

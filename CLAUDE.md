@@ -137,6 +137,8 @@ src/core/                 pure logic, no React; every module has a .test.ts
   i18n.ts                 the ar / en dictionary and direction
 src/ui/                   React
   app.tsx                 shell: open schema, open definition, root kind, look switch, output
+  open.tsx                the schema drop area; reading JSON files
+  nodes.tsx               node editors every look shares (EditorContext, ValueNode, PredicateNode)
   looks/rail.tsx, looks/sentence.tsx, looks/tree.tsx, looks/code.tsx
   palette.tsx, controls.tsx
 ```
