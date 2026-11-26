@@ -1,0 +1,2704 @@
+{
+  "schemas": {
+    "payroll-predicate": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "x-kind": "predicate",
+      "$defs": {
+        "expression": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "const": "years__ge"
+                },
+                "args": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "integer",
+                      "x-label": {
+                        "en": "Years",
+                        "ar": "السنوات"
+                      }
+                    }
+                  ],
+                  "items": false
+                },
+                "kwargs": {
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "x-label": {
+                        "en": "Years",
+                        "ar": "السنوات"
+                      }
+                    }
+                  },
+                  "required": [],
+                  "additionalProperties": false
+                },
+                "inverse": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "name",
+                "args",
+                "kwargs",
+                "inverse"
+              ],
+              "additionalProperties": false,
+              "x-label": {
+                "en": "Years of service at least",
+                "ar": "سنوات الخدمة لا تقل عن"
+              },
+              "x-field": "years",
+              "x-operator": "ge"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "const": "grade__eq"
+                },
+                "args": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "a",
+                        "b",
+                        "c"
+                      ],
+                      "x-choices": [
+                        {
+                          "value": "a",
+                          "label": {
+                            "en": "First",
+                            "ar": "الأولى"
+                          }
+                        },
+                        {
+                          "value": "b",
+                          "label": {
+                            "en": "Second",
+                            "ar": "الثانية"
+                          }
+                        },
+                        {
+                          "value": "c",
+                          "label": {
+                            "en": "Third",
+                            "ar": "الثالثة"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "items": false
+                },
+                "kwargs": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string",
+                      "enum": [
+                        "a",
+                        "b",
+                        "c"
+                      ],
+                      "x-choices": [
+                        {
+                          "value": "a",
+                          "label": {
+                            "en": "First",
+                            "ar": "الأولى"
+                          }
+                        },
+                        {
+                          "value": "b",
+                          "label": {
+                            "en": "Second",
+                            "ar": "الثانية"
+                          }
+                        },
+                        {
+                          "value": "c",
+                          "label": {
+                            "en": "Third",
+                            "ar": "الثالثة"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "required": [],
+                  "additionalProperties": false
+                },
+                "inverse": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "name",
+                "args",
+                "kwargs",
+                "inverse"
+              ],
+              "additionalProperties": false,
+              "x-label": {
+                "en": "Grade is",
+                "ar": "الفئة هي"
+              },
+              "x-field": "grade",
+              "x-operator": "eq"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "const": "children__ge"
+                },
+                "args": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "integer"
+                    }
+                  ],
+                  "items": false
+                },
+                "kwargs": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [],
+                  "additionalProperties": false
+                },
+                "inverse": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "name",
+                "args",
+                "kwargs",
+                "inverse"
+              ],
+              "additionalProperties": false,
+              "x-label": {
+                "en": "Children at least",
+                "ar": "عدد الأولاد لا يقل عن"
+              },
+              "x-field": "children",
+              "x-operator": "ge"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "const": "is_married"
+                },
+                "args": {
+                  "type": "array",
+                  "items": false
+                },
+                "kwargs": {
+                  "type": "object",
+                  "properties": {},
+                  "required": [],
+                  "additionalProperties": false
+                },
+                "inverse": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "name",
+                "args",
+                "kwargs",
+                "inverse"
+              ],
+              "additionalProperties": false,
+              "x-label": {
+                "en": "Is married",
+                "ar": "متزوج"
+              }
+            },
+            {
+              "$ref": "#/$defs/wrapper"
+            }
+          ]
+        },
+        "wrapper": {
+          "type": "object",
+          "properties": {
+            "operator": {
+              "enum": [
+                "all",
+                "any"
+              ],
+              "type": "string"
+            },
+            "expressions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/expression"
+              }
+            }
+          },
+          "required": [
+            "operator",
+            "expressions"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "$ref": "#/$defs/expression"
+    },
+    "payroll-formula": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "x-kind": "formula",
+      "$defs": {
+        "formula": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/$defs/variable"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "operator": {
+                  "enum": [
+                    "add",
+                    "subtract",
+                    "multiply",
+                    "divide",
+                    "modulo",
+                    "floor_divide",
+                    "power"
+                  ],
+                  "type": "string"
+                },
+                "expressions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#"
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "operator",
+                "expressions"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "round": {
+                  "$ref": "#"
+                },
+                "ndigits": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "round",
+                "ndigits"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "positive": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "positive"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "negative": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "negative"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "absolute": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "absolute"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "ceil": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "ceil"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "floor": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "floor"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "trunc": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "trunc"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "sqrt": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "sqrt"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "cbrt": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "cbrt"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "exp": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "exp"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "exp2": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "exp2"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "expm1": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "expm1"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "log10": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "log10"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "log1p": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "log1p"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "log2": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "log2"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "sin": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "sin"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "sinh": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "sinh"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "asin": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "asin"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "asinh": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "asinh"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "cos": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "cos"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "cosh": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "cosh"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "acos": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "acos"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "acosh": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "acosh"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "tan": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "tan"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "tanh": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "tanh"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "atan": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "atan"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "atanh": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "atanh"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "degrees": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "degrees"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "radians": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "radians"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "erf": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "erf"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "erfc": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "erfc"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "gamma": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "gamma"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "lgamma": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "lgamma"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "fabs": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "fabs"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "ulp": {
+                  "$ref": "#"
+                }
+              },
+              "required": [
+                "ulp"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "when": {
+                  "x-kind": "ruleset",
+                  "type": "object",
+                  "properties": {
+                    "branches": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "when": {
+                            "$ref": "urn:pyruleset:when-condition"
+                          },
+                          "then": {
+                            "$ref": "#"
+                          },
+                          "label": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "when",
+                          "then"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "otherwise": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "otherwise"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "when"
+              ],
+              "additionalProperties": false,
+              "$defs": {
+                "when-condition": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "x-kind": "predicate",
+                  "$defs": {
+                    "expression": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "const": "years__ge"
+                            },
+                            "args": {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "integer",
+                                  "x-label": {
+                                    "en": "Years",
+                                    "ar": "السنوات"
+                                  }
+                                }
+                              ],
+                              "items": false
+                            },
+                            "kwargs": {
+                              "type": "object",
+                              "properties": {
+                                "minimum": {
+                                  "type": "integer",
+                                  "x-label": {
+                                    "en": "Years",
+                                    "ar": "السنوات"
+                                  }
+                                }
+                              },
+                              "required": [],
+                              "additionalProperties": false
+                            },
+                            "inverse": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "args",
+                            "kwargs",
+                            "inverse"
+                          ],
+                          "additionalProperties": false,
+                          "x-label": {
+                            "en": "Years of service at least",
+                            "ar": "سنوات الخدمة لا تقل عن"
+                          },
+                          "x-field": "years",
+                          "x-operator": "ge"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "const": "grade__eq"
+                            },
+                            "args": {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "a",
+                                    "b",
+                                    "c"
+                                  ],
+                                  "x-choices": [
+                                    {
+                                      "value": "a",
+                                      "label": {
+                                        "en": "First",
+                                        "ar": "الأولى"
+                                      }
+                                    },
+                                    {
+                                      "value": "b",
+                                      "label": {
+                                        "en": "Second",
+                                        "ar": "الثانية"
+                                      }
+                                    },
+                                    {
+                                      "value": "c",
+                                      "label": {
+                                        "en": "Third",
+                                        "ar": "الثالثة"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ],
+                              "items": false
+                            },
+                            "kwargs": {
+                              "type": "object",
+                              "properties": {
+                                "value": {
+                                  "type": "string",
+                                  "enum": [
+                                    "a",
+                                    "b",
+                                    "c"
+                                  ],
+                                  "x-choices": [
+                                    {
+                                      "value": "a",
+                                      "label": {
+                                        "en": "First",
+                                        "ar": "الأولى"
+                                      }
+                                    },
+                                    {
+                                      "value": "b",
+                                      "label": {
+                                        "en": "Second",
+                                        "ar": "الثانية"
+                                      }
+                                    },
+                                    {
+                                      "value": "c",
+                                      "label": {
+                                        "en": "Third",
+                                        "ar": "الثالثة"
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [],
+                              "additionalProperties": false
+                            },
+                            "inverse": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "args",
+                            "kwargs",
+                            "inverse"
+                          ],
+                          "additionalProperties": false,
+                          "x-label": {
+                            "en": "Grade is",
+                            "ar": "الفئة هي"
+                          },
+                          "x-field": "grade",
+                          "x-operator": "eq"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "const": "children__ge"
+                            },
+                            "args": {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "integer"
+                                }
+                              ],
+                              "items": false
+                            },
+                            "kwargs": {
+                              "type": "object",
+                              "properties": {
+                                "count": {
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [],
+                              "additionalProperties": false
+                            },
+                            "inverse": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "args",
+                            "kwargs",
+                            "inverse"
+                          ],
+                          "additionalProperties": false,
+                          "x-label": {
+                            "en": "Children at least",
+                            "ar": "عدد الأولاد لا يقل عن"
+                          },
+                          "x-field": "children",
+                          "x-operator": "ge"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "const": "is_married"
+                            },
+                            "args": {
+                              "type": "array",
+                              "items": false
+                            },
+                            "kwargs": {
+                              "type": "object",
+                              "properties": {},
+                              "required": [],
+                              "additionalProperties": false
+                            },
+                            "inverse": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "args",
+                            "kwargs",
+                            "inverse"
+                          ],
+                          "additionalProperties": false,
+                          "x-label": {
+                            "en": "Is married",
+                            "ar": "متزوج"
+                          }
+                        },
+                        {
+                          "$ref": "#/$defs/wrapper"
+                        }
+                      ]
+                    },
+                    "wrapper": {
+                      "type": "object",
+                      "properties": {
+                        "operator": {
+                          "enum": [
+                            "all",
+                            "any"
+                          ],
+                          "type": "string"
+                        },
+                        "expressions": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/$defs/expression"
+                          }
+                        }
+                      },
+                      "required": [
+                        "operator",
+                        "expressions"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "$id": "urn:pyruleset:when-condition",
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/expression"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "variable": {
+          "oneOf": [
+            {
+              "const": "salary",
+              "x-label": {
+                "en": "Salary",
+                "ar": "الراتب"
+              },
+              "description": "Return the monthly base salary."
+            },
+            {
+              "const": "years",
+              "x-label": {
+                "en": "Years of service",
+                "ar": "سنوات الخدمة"
+              }
+            },
+            {
+              "const": "children",
+              "x-label": {
+                "en": "Children",
+                "ar": "عدد الأولاد"
+              }
+            }
+          ]
+        }
+      },
+      "$ref": "#/$defs/formula"
+    },
+    "payroll-ruleset": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "x-kind": "ruleset",
+      "type": "object",
+      "properties": {
+        "branches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "when": {
+                "$ref": "urn:pyruleset:condition"
+              },
+              "then": {
+                "$ref": "urn:pyruleset:value"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "when",
+              "then"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "otherwise": {
+          "$ref": "urn:pyruleset:value"
+        }
+      },
+      "required": [
+        "otherwise"
+      ],
+      "additionalProperties": false,
+      "$defs": {
+        "condition": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "x-kind": "predicate",
+          "$defs": {
+            "expression": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "const": "years__ge"
+                    },
+                    "args": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "integer",
+                          "x-label": {
+                            "en": "Years",
+                            "ar": "السنوات"
+                          }
+                        }
+                      ],
+                      "items": false
+                    },
+                    "kwargs": {
+                      "type": "object",
+                      "properties": {
+                        "minimum": {
+                          "type": "integer",
+                          "x-label": {
+                            "en": "Years",
+                            "ar": "السنوات"
+                          }
+                        }
+                      },
+                      "required": [],
+                      "additionalProperties": false
+                    },
+                    "inverse": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "args",
+                    "kwargs",
+                    "inverse"
+                  ],
+                  "additionalProperties": false,
+                  "x-label": {
+                    "en": "Years of service at least",
+                    "ar": "سنوات الخدمة لا تقل عن"
+                  },
+                  "x-field": "years",
+                  "x-operator": "ge"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "const": "grade__eq"
+                    },
+                    "args": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "a",
+                            "b",
+                            "c"
+                          ],
+                          "x-choices": [
+                            {
+                              "value": "a",
+                              "label": {
+                                "en": "First",
+                                "ar": "الأولى"
+                              }
+                            },
+                            {
+                              "value": "b",
+                              "label": {
+                                "en": "Second",
+                                "ar": "الثانية"
+                              }
+                            },
+                            {
+                              "value": "c",
+                              "label": {
+                                "en": "Third",
+                                "ar": "الثالثة"
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "items": false
+                    },
+                    "kwargs": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string",
+                          "enum": [
+                            "a",
+                            "b",
+                            "c"
+                          ],
+                          "x-choices": [
+                            {
+                              "value": "a",
+                              "label": {
+                                "en": "First",
+                                "ar": "الأولى"
+                              }
+                            },
+                            {
+                              "value": "b",
+                              "label": {
+                                "en": "Second",
+                                "ar": "الثانية"
+                              }
+                            },
+                            {
+                              "value": "c",
+                              "label": {
+                                "en": "Third",
+                                "ar": "الثالثة"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "required": [],
+                      "additionalProperties": false
+                    },
+                    "inverse": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "args",
+                    "kwargs",
+                    "inverse"
+                  ],
+                  "additionalProperties": false,
+                  "x-label": {
+                    "en": "Grade is",
+                    "ar": "الفئة هي"
+                  },
+                  "x-field": "grade",
+                  "x-operator": "eq"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "const": "children__ge"
+                    },
+                    "args": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "integer"
+                        }
+                      ],
+                      "items": false
+                    },
+                    "kwargs": {
+                      "type": "object",
+                      "properties": {
+                        "count": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [],
+                      "additionalProperties": false
+                    },
+                    "inverse": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "args",
+                    "kwargs",
+                    "inverse"
+                  ],
+                  "additionalProperties": false,
+                  "x-label": {
+                    "en": "Children at least",
+                    "ar": "عدد الأولاد لا يقل عن"
+                  },
+                  "x-field": "children",
+                  "x-operator": "ge"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "const": "is_married"
+                    },
+                    "args": {
+                      "type": "array",
+                      "items": false
+                    },
+                    "kwargs": {
+                      "type": "object",
+                      "properties": {},
+                      "required": [],
+                      "additionalProperties": false
+                    },
+                    "inverse": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "args",
+                    "kwargs",
+                    "inverse"
+                  ],
+                  "additionalProperties": false,
+                  "x-label": {
+                    "en": "Is married",
+                    "ar": "متزوج"
+                  }
+                },
+                {
+                  "$ref": "#/$defs/wrapper"
+                }
+              ]
+            },
+            "wrapper": {
+              "type": "object",
+              "properties": {
+                "operator": {
+                  "enum": [
+                    "all",
+                    "any"
+                  ],
+                  "type": "string"
+                },
+                "expressions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/expression"
+                  }
+                }
+              },
+              "required": [
+                "operator",
+                "expressions"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "$id": "urn:pyruleset:condition",
+          "allOf": [
+            {
+              "$ref": "#/$defs/expression"
+            }
+          ]
+        },
+        "value": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "x-kind": "formula",
+          "$defs": {
+            "formula": {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "$ref": "#/$defs/variable"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operator": {
+                      "enum": [
+                        "add",
+                        "subtract",
+                        "multiply",
+                        "divide",
+                        "modulo",
+                        "floor_divide",
+                        "power"
+                      ],
+                      "type": "string"
+                    },
+                    "expressions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#"
+                      },
+                      "minItems": 1
+                    }
+                  },
+                  "required": [
+                    "operator",
+                    "expressions"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "round": {
+                      "$ref": "#"
+                    },
+                    "ndigits": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "round",
+                    "ndigits"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "positive": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "positive"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "negative": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "negative"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "absolute": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "absolute"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "ceil": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "ceil"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "floor": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "floor"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "trunc": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "trunc"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "sqrt": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "sqrt"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "cbrt": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "cbrt"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "exp": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "exp"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "exp2": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "exp2"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "expm1": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "expm1"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "log10": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "log10"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "log1p": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "log1p"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "log2": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "log2"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "sin": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "sin"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "sinh": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "sinh"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "asin": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "asin"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "asinh": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "asinh"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "cos": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "cos"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "cosh": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "cosh"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "acos": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "acos"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "acosh": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "acosh"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "tan": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "tan"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "tanh": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "tanh"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "atan": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "atan"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "atanh": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "atanh"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "degrees": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "degrees"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "radians": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "radians"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "erf": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "erf"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "erfc": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "erfc"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "gamma": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "gamma"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "lgamma": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "lgamma"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "fabs": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "fabs"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "ulp": {
+                      "$ref": "#"
+                    }
+                  },
+                  "required": [
+                    "ulp"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "when": {
+                      "x-kind": "ruleset",
+                      "type": "object",
+                      "properties": {
+                        "branches": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "when": {
+                                "$ref": "urn:pyruleset:when-condition"
+                              },
+                              "then": {
+                                "$ref": "#"
+                              },
+                              "label": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "when",
+                              "then"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "otherwise": {
+                          "$ref": "#"
+                        }
+                      },
+                      "required": [
+                        "otherwise"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "when"
+                  ],
+                  "additionalProperties": false,
+                  "$defs": {
+                    "when-condition": {
+                      "$schema": "https://json-schema.org/draft/2020-12/schema",
+                      "x-kind": "predicate",
+                      "$defs": {
+                        "expression": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "const": "years__ge"
+                                },
+                                "args": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": "integer",
+                                      "x-label": {
+                                        "en": "Years",
+                                        "ar": "السنوات"
+                                      }
+                                    }
+                                  ],
+                                  "items": false
+                                },
+                                "kwargs": {
+                                  "type": "object",
+                                  "properties": {
+                                    "minimum": {
+                                      "type": "integer",
+                                      "x-label": {
+                                        "en": "Years",
+                                        "ar": "السنوات"
+                                      }
+                                    }
+                                  },
+                                  "required": [],
+                                  "additionalProperties": false
+                                },
+                                "inverse": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "args",
+                                "kwargs",
+                                "inverse"
+                              ],
+                              "additionalProperties": false,
+                              "x-label": {
+                                "en": "Years of service at least",
+                                "ar": "سنوات الخدمة لا تقل عن"
+                              },
+                              "x-field": "years",
+                              "x-operator": "ge"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "const": "grade__eq"
+                                },
+                                "args": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "a",
+                                        "b",
+                                        "c"
+                                      ],
+                                      "x-choices": [
+                                        {
+                                          "value": "a",
+                                          "label": {
+                                            "en": "First",
+                                            "ar": "الأولى"
+                                          }
+                                        },
+                                        {
+                                          "value": "b",
+                                          "label": {
+                                            "en": "Second",
+                                            "ar": "الثانية"
+                                          }
+                                        },
+                                        {
+                                          "value": "c",
+                                          "label": {
+                                            "en": "Third",
+                                            "ar": "الثالثة"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "items": false
+                                },
+                                "kwargs": {
+                                  "type": "object",
+                                  "properties": {
+                                    "value": {
+                                      "type": "string",
+                                      "enum": [
+                                        "a",
+                                        "b",
+                                        "c"
+                                      ],
+                                      "x-choices": [
+                                        {
+                                          "value": "a",
+                                          "label": {
+                                            "en": "First",
+                                            "ar": "الأولى"
+                                          }
+                                        },
+                                        {
+                                          "value": "b",
+                                          "label": {
+                                            "en": "Second",
+                                            "ar": "الثانية"
+                                          }
+                                        },
+                                        {
+                                          "value": "c",
+                                          "label": {
+                                            "en": "Third",
+                                            "ar": "الثالثة"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [],
+                                  "additionalProperties": false
+                                },
+                                "inverse": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "args",
+                                "kwargs",
+                                "inverse"
+                              ],
+                              "additionalProperties": false,
+                              "x-label": {
+                                "en": "Grade is",
+                                "ar": "الفئة هي"
+                              },
+                              "x-field": "grade",
+                              "x-operator": "eq"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "const": "children__ge"
+                                },
+                                "args": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": "integer"
+                                    }
+                                  ],
+                                  "items": false
+                                },
+                                "kwargs": {
+                                  "type": "object",
+                                  "properties": {
+                                    "count": {
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [],
+                                  "additionalProperties": false
+                                },
+                                "inverse": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "args",
+                                "kwargs",
+                                "inverse"
+                              ],
+                              "additionalProperties": false,
+                              "x-label": {
+                                "en": "Children at least",
+                                "ar": "عدد الأولاد لا يقل عن"
+                              },
+                              "x-field": "children",
+                              "x-operator": "ge"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "const": "is_married"
+                                },
+                                "args": {
+                                  "type": "array",
+                                  "items": false
+                                },
+                                "kwargs": {
+                                  "type": "object",
+                                  "properties": {},
+                                  "required": [],
+                                  "additionalProperties": false
+                                },
+                                "inverse": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "args",
+                                "kwargs",
+                                "inverse"
+                              ],
+                              "additionalProperties": false,
+                              "x-label": {
+                                "en": "Is married",
+                                "ar": "متزوج"
+                              }
+                            },
+                            {
+                              "$ref": "#/$defs/wrapper"
+                            }
+                          ]
+                        },
+                        "wrapper": {
+                          "type": "object",
+                          "properties": {
+                            "operator": {
+                              "enum": [
+                                "all",
+                                "any"
+                              ],
+                              "type": "string"
+                            },
+                            "expressions": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/$defs/expression"
+                              }
+                            }
+                          },
+                          "required": [
+                            "operator",
+                            "expressions"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "$id": "urn:pyruleset:when-condition",
+                      "allOf": [
+                        {
+                          "$ref": "#/$defs/expression"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            "variable": {
+              "oneOf": [
+                {
+                  "const": "salary",
+                  "x-label": {
+                    "en": "Salary",
+                    "ar": "الراتب"
+                  },
+                  "description": "Return the monthly base salary."
+                },
+                {
+                  "const": "years",
+                  "x-label": {
+                    "en": "Years of service",
+                    "ar": "سنوات الخدمة"
+                  }
+                },
+                {
+                  "const": "children",
+                  "x-label": {
+                    "en": "Children",
+                    "ar": "عدد الأولاد"
+                  }
+                }
+              ]
+            }
+          },
+          "$id": "urn:pyruleset:value",
+          "allOf": [
+            {
+              "$ref": "#/$defs/formula"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "one rule",
+      "kind": "predicate",
+      "schema": "payroll-predicate",
+      "definition": {
+        "name": "years__ge",
+        "args": [
+          10
+        ],
+        "kwargs": {},
+        "inverse": false
+      },
+      "prints": "years__ge",
+      "python": "rule = years__ge(10)\n"
+    },
+    {
+      "name": "a rule with a keyword argument",
+      "kind": "predicate",
+      "schema": "payroll-predicate",
+      "definition": {
+        "name": "children__ge",
+        "args": [],
+        "kwargs": {
+          "count": 2
+        },
+        "inverse": false
+      },
+      "prints": "children__ge",
+      "python": "rule = children__ge(count=2)\n"
+    },
+    {
+      "name": "a negated rule",
+      "kind": "predicate",
+      "schema": "payroll-predicate",
+      "definition": {
+        "name": "is_married",
+        "args": [],
+        "kwargs": {},
+        "inverse": true
+      },
+      "prints": "NOT is_married",
+      "python": "rule = ~is_married()\n"
+    },
+    {
+      "name": "all of",
+      "kind": "predicate",
+      "schema": "payroll-predicate",
+      "definition": {
+        "operator": "all",
+        "expressions": [
+          {
+            "name": "years__ge",
+            "args": [
+              10
+            ],
+            "kwargs": {},
+            "inverse": false
+          },
+          {
+            "name": "grade__eq",
+            "args": [
+              "a"
+            ],
+            "kwargs": {},
+            "inverse": false
+          }
+        ]
+      },
+      "prints": "((true AND years__ge) AND grade__eq)",
+      "python": "rule = years__ge(10) & grade__eq('a')\n"
+    },
+    {
+      "name": "nested groups",
+      "kind": "predicate",
+      "schema": "payroll-predicate",
+      "definition": {
+        "operator": "any",
+        "expressions": [
+          {
+            "operator": "all",
+            "expressions": [
+              {
+                "name": "is_married",
+                "args": [],
+                "kwargs": {},
+                "inverse": false
+              },
+              {
+                "name": "children__ge",
+                "args": [],
+                "kwargs": {
+                  "count": 2
+                },
+                "inverse": false
+              }
+            ]
+          },
+          {
+            "operator": "all",
+            "expressions": [
+              {
+                "name": "grade__eq",
+                "args": [
+                  "a"
+                ],
+                "kwargs": {},
+                "inverse": false
+              },
+              {
+                "name": "years__ge",
+                "args": [
+                  20
+                ],
+                "kwargs": {},
+                "inverse": true
+              }
+            ]
+          }
+        ]
+      },
+      "prints": "((false OR ((true AND is_married) AND children__ge)) OR ((true AND grade__eq) AND NOT years__ge))",
+      "python": "rule = (is_married() & children__ge(count=2)) | (grade__eq('a') & ~years__ge(20))\n"
+    },
+    {
+      "name": "a number",
+      "kind": "formula",
+      "schema": "payroll-formula",
+      "definition": 1000,
+      "prints": "1000",
+      "python": "rule = 1000\n"
+    },
+    {
+      "name": "a decimal number",
+      "kind": "formula",
+      "schema": "payroll-formula",
+      "definition": 0.075,
+      "prints": "0.075",
+      "python": "rule = 0.075\n"
+    },
+    {
+      "name": "a variable",
+      "kind": "formula",
+      "schema": "payroll-formula",
+      "definition": "salary",
+      "prints": "salary",
+      "python": "rule = salary\n"
+    },
+    {
+      "name": "an operation",
+      "kind": "formula",
+      "schema": "payroll-formula",
+      "definition": {
+        "operator": "multiply",
+        "expressions": [
+          "salary",
+          0.05
+        ]
+      },
+      "prints": "(salary * 0.05)",
+      "python": "rule = salary * 0.05\n"
+    },
+    {
+      "name": "a chain",
+      "kind": "formula",
+      "schema": "payroll-formula",
+      "definition": {
+        "operator": "add",
+        "expressions": [
+          "salary",
+          100,
+          {
+            "operator": "multiply",
+            "expressions": [
+              "children",
+              50
+            ]
+          }
+        ]
+      },
+      "prints": "((salary + 100) + (children * 50))",
+      "python": "rule = salary + 100 + children * 50\n"
+    },
+    {
+      "name": "a power chain",
+      "kind": "formula",
+      "schema": "payroll-formula",
+      "definition": {
+        "operator": "power",
+        "expressions": [
+          "years",
+          2,
+          0.5
+        ]
+      },
+      "prints": "((years ** 2) ** 0.5)",
+      "python": "rule = (years ** 2) ** 0.5\n"
+    },
+    {
+      "name": "a number first",
+      "kind": "formula",
+      "schema": "payroll-formula",
+      "definition": {
+        "operator": "subtract",
+        "expressions": [
+          2000,
+          "salary"
+        ]
+      },
+      "prints": "(2000 - salary)",
+      "python": "rule = 2000 - salary\n"
+    },
+    {
+      "name": "round",
+      "kind": "formula",
+      "schema": "payroll-formula",
+      "definition": {
+        "round": {
+          "operator": "multiply",
+          "expressions": [
+            "salary",
+            0.075
+          ]
+        },
+        "ndigits": 2
+      },
+      "prints": "round((salary * 0.075), 2)",
+      "python": "rule = round(salary * 0.075, 2)\n"
+    },
+    {
+      "name": "functions",
+      "kind": "formula",
+      "schema": "payroll-formula",
+      "definition": {
+        "floor": {
+          "sqrt": "years"
+        }
+      },
+      "prints": "floor(sqrt(years))",
+      "python": "from pyformula.math import floor, sqrt\n\nrule = floor(sqrt(years))\n"
+    },
+    {
+      "name": "negative and absolute",
+      "kind": "formula",
+      "schema": "payroll-formula",
+      "definition": {
+        "negative": {
+          "absolute": {
+            "operator": "subtract",
+            "expressions": [
+              "years",
+              10
+            ]
+          }
+        }
+      },
+      "prints": "-|(years - 10)|",
+      "python": "rule = -abs(years - 10)\n"
+    },
+    {
+      "name": "a ruleset inside a formula",
+      "kind": "formula",
+      "schema": "payroll-formula",
+      "definition": {
+        "operator": "add",
+        "expressions": [
+          "salary",
+          {
+            "when": {
+              "branches": [
+                {
+                  "when": {
+                    "operator": "all",
+                    "expressions": [
+                      {
+                        "name": "is_married",
+                        "args": [],
+                        "kwargs": {},
+                        "inverse": false
+                      },
+                      {
+                        "name": "children__ge",
+                        "args": [],
+                        "kwargs": {
+                          "count": 2
+                        },
+                        "inverse": false
+                      }
+                    ]
+                  },
+                  "then": {
+                    "operator": "multiply",
+                    "expressions": [
+                      "children",
+                      25
+                    ]
+                  },
+                  "label": "family"
+                }
+              ],
+              "otherwise": 0
+            }
+          }
+        ]
+      },
+      "prints": "(salary + when(family -> (children * 25) | otherwise -> 0))",
+      "python": "from pyformula import Formula\nfrom pyruleset import otherwise, when\n\nrule = salary + Formula((when(is_married() & children__ge(count=2), children * 25, label='family') | otherwise(lambda _: 0)), name='when(family -> (children * 25) | otherwise -> 0)')\n"
+    },
+    {
+      "name": "a ruleset",
+      "kind": "ruleset",
+      "schema": "payroll-ruleset",
+      "definition": {
+        "branches": [
+          {
+            "when": {
+              "operator": "all",
+              "expressions": [
+                {
+                  "name": "years__ge",
+                  "args": [
+                    10
+                  ],
+                  "kwargs": {},
+                  "inverse": false
+                },
+                {
+                  "name": "grade__eq",
+                  "args": [
+                    "a"
+                  ],
+                  "kwargs": {},
+                  "inverse": false
+                }
+              ]
+            },
+            "then": {
+              "operator": "multiply",
+              "expressions": [
+                "salary",
+                0.2
+              ]
+            },
+            "label": "senior grade a"
+          },
+          {
+            "when": {
+              "name": "years__ge",
+              "args": [
+                10
+              ],
+              "kwargs": {},
+              "inverse": false
+            },
+            "then": {
+              "operator": "multiply",
+              "expressions": [
+                "salary",
+                0.1
+              ]
+            },
+            "label": "senior"
+          }
+        ],
+        "otherwise": {
+          "operator": "multiply",
+          "expressions": [
+            "salary",
+            0.05
+          ]
+        }
+      },
+      "prints": "Ruleset(senior grade a | senior | otherwise)",
+      "python": "from pyruleset import otherwise, when\n\nrule = (\n    when(years__ge(10) & grade__eq('a'), salary * 0.2, label='senior grade a')\n    | when(years__ge(10), salary * 0.1, label='senior')\n    | otherwise(salary * 0.05)\n)\n"
+    },
+    {
+      "name": "an unlabelled branch",
+      "kind": "ruleset",
+      "schema": "payroll-ruleset",
+      "definition": {
+        "branches": [
+          {
+            "when": {
+              "name": "grade__eq",
+              "args": [
+                "a"
+              ],
+              "kwargs": {},
+              "inverse": false
+            },
+            "then": 150
+          }
+        ],
+        "otherwise": 0
+      },
+      "prints": "Ruleset(grade__eq | otherwise)",
+      "python": "from pyruleset import otherwise, when\n\nrule = (\n    when(grade__eq('a'), lambda _: 150)\n    | otherwise(lambda _: 0)\n)\n"
+    },
+    {
+      "name": "only otherwise",
+      "kind": "ruleset",
+      "schema": "payroll-ruleset",
+      "definition": {
+        "branches": [],
+        "otherwise": "salary"
+      },
+      "prints": "Ruleset(otherwise)",
+      "python": "from pyruleset import Ruleset\n\nrule = Ruleset((), salary)\n"
+    },
+    {
+      "name": "a ruleset inside a branch",
+      "kind": "ruleset",
+      "schema": "payroll-ruleset",
+      "definition": {
+        "branches": [
+          {
+            "when": {
+              "name": "years__ge",
+              "args": [
+                10
+              ],
+              "kwargs": {},
+              "inverse": false
+            },
+            "then": {
+              "operator": "add",
+              "expressions": [
+                100,
+                {
+                  "when": {
+                    "branches": [
+                      {
+                        "when": {
+                          "operator": "all",
+                          "expressions": [
+                            {
+                              "name": "is_married",
+                              "args": [],
+                              "kwargs": {},
+                              "inverse": false
+                            },
+                            {
+                              "name": "children__ge",
+                              "args": [],
+                              "kwargs": {
+                                "count": 2
+                              },
+                              "inverse": false
+                            }
+                          ]
+                        },
+                        "then": {
+                          "operator": "multiply",
+                          "expressions": [
+                            "children",
+                            25
+                          ]
+                        },
+                        "label": "family"
+                      }
+                    ],
+                    "otherwise": 0
+                  }
+                }
+              ]
+            },
+            "label": "senior"
+          }
+        ],
+        "otherwise": {
+          "when": {
+            "branches": [
+              {
+                "when": {
+                  "operator": "all",
+                  "expressions": [
+                    {
+                      "name": "is_married",
+                      "args": [],
+                      "kwargs": {},
+                      "inverse": false
+                    },
+                    {
+                      "name": "children__ge",
+                      "args": [],
+                      "kwargs": {
+                        "count": 2
+                      },
+                      "inverse": false
+                    }
+                  ]
+                },
+                "then": {
+                  "operator": "multiply",
+                  "expressions": [
+                    "children",
+                    25
+                  ]
+                },
+                "label": "family"
+              }
+            ],
+            "otherwise": 0
+          }
+        }
+      },
+      "prints": "Ruleset(senior | otherwise)",
+      "python": "from pyformula import Formula\nfrom pyruleset import otherwise, when\n\nrule = (\n    when(years__ge(10), 100 + Formula((when(is_married() & children__ge(count=2), children * 25, label='family') | otherwise(lambda _: 0)), name='when(family -> (children * 25) | otherwise -> 0)'), label='senior')\n    | otherwise(Formula((when(is_married() & children__ge(count=2), children * 25, label='family') | otherwise(lambda _: 0)), name='when(family -> (children * 25) | otherwise -> 0)'))\n)\n"
+    }
+  ]
+}
