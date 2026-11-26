@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import cases from "./cases.json";
-import { makeValidator } from "./validate.ts";
+import { hasProblemsUnder, makeValidator } from "./validate.ts";
 
 const ruleset = makeValidator(cases.schemas["payroll-ruleset"]);
 const formula = makeValidator(cases.schemas["payroll-formula"]);
@@ -53,5 +53,16 @@ describe("makeValidator", () => {
   it("reports a missing part where it is missing", () => {
     expect(Object.keys(ruleset({ branches: [] }))).toEqual(["$"]);
     expect(ruleset({ branches: [] }).$?.[0]?.keyword).toBe("required");
+  });
+});
+
+describe("hasProblemsUnder", () => {
+  const problems = { "$.branches[1].then": [{ keyword: "type", message: "" }] };
+
+  it("finds a problem on the node or below it, not on a sibling sharing its prefix", () => {
+    expect(hasProblemsUnder(problems, "$.branches[1]")).toBe(true);
+    expect(hasProblemsUnder(problems, "$.branches[1].then")).toBe(true);
+    expect(hasProblemsUnder(problems, "$.branches[1].when")).toBe(false);
+    expect(hasProblemsUnder({ "$.branches[10]": [] }, "$.branches[1]")).toBe(false);
   });
 });

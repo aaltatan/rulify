@@ -9,12 +9,23 @@ import { emptyRuleset } from "../core/ruleset.ts";
 import type { Json, Path } from "../core/tree.ts";
 import { makeValidator, type Problem } from "../core/validate.ts";
 import { GHOST_BUTTON, Icon, Logo, Segmented } from "./controls.tsx";
-import { Rail, RailLook } from "./looks/rail.tsx";
-import { EditorContext } from "./nodes.tsx";
+import { Rail } from "./looks/rail.tsx";
+import { SentenceCondition, SentenceRules } from "./looks/sentence.tsx";
+import { TreeRules } from "./looks/tree.tsx";
+import { EditorContext, type Look, PredicateNode, Root } from "./nodes.tsx";
 import { readJsonFile, SchemaDrop } from "./open.tsx";
 import { Palette } from "./palette.tsx";
 
 const KIND_ORDER: readonly Kind[] = ["ruleset", "predicate", "formula"];
+
+/** The looks draw the same definition; only rulesets and conditions are drawn differently. */
+const LOOKS = {
+  rail: { Rules: Rail, Condition: PredicateNode },
+  sentence: { Rules: SentenceRules, Condition: SentenceCondition },
+  tree: { Rules: TreeRules, Condition: PredicateNode },
+} as const satisfies Record<string, Look>;
+
+type LookName = keyof typeof LOOKS;
 
 function emptyOf(kind: Kind): Json {
   if (kind === "ruleset") return emptyRuleset() as Json;
@@ -28,6 +39,7 @@ export function App() {
   const [lang, setLang] = useState<Lang>("ar");
   const [root, setRoot] = useState<unknown>(null);
   const [kind, setKind] = useState<Kind>("ruleset");
+  const [look, setLook] = useState<LookName>("rail");
   const [definition, setDefinition] = useState<Json>(null);
   const [target, setTarget] = useState<Path | null>(null);
   const [openError, setOpenError] = useState<string | null>(null);
@@ -161,6 +173,14 @@ export function App() {
                   )}
                   onChange={choose}
                 />
+                <Segmented
+                  label={t(lang, "look")}
+                  value={look}
+                  options={(Object.keys(LOOKS) as LookName[]).map(
+                    (name) => [name, t(lang, name)] as const,
+                  )}
+                  onChange={setLook}
+                />
                 <span className="ms-auto flex flex-wrap gap-2">
                   <label htmlFor={definitionId} className={`${GHOST_BUTTON} cursor-pointer`}>
                     <Icon name="upload" />
@@ -195,7 +215,7 @@ export function App() {
                   change: setDefinition,
                   target,
                   setTarget,
-                  Rules: Rail,
+                  Rules: LOOKS[look].Rules,
                 }}
               >
                 <div
@@ -207,7 +227,7 @@ export function App() {
                 >
                   {kind !== "predicate" && <Palette />}
                   <div className="min-w-0">
-                    <RailLook kind={kind} />
+                    <Root kind={kind} Condition={LOOKS[look].Condition} />
                   </div>
                 </div>
               </EditorContext>

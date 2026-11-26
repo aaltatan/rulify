@@ -27,7 +27,8 @@ import {
   setOperator,
   toggleInverse,
 } from "../core/predicate.ts";
-import type { Catalog, Param } from "../core/reader.ts";
+import type { Catalog, Kind, Param } from "../core/reader.ts";
+import { moveBranch, type Ruleset, removeBranch, setLabel } from "../core/ruleset.ts";
 import { at, type Json, type Path, pathKey, setAt } from "../core/tree.ts";
 import type { Problems } from "../core/validate.ts";
 import {
@@ -342,7 +343,7 @@ function GroupNode({ path, node }: { path: Path; node: Group }) {
       ))}
       {node.expressions.length === 0 && (
         <p className="rounded-[5px] border border-dashed border-rule-strong px-3 py-2 text-[0.8125rem] text-ink-muted">
-          {t(lang, "noConditions")}
+          {t(lang, node.operator === "all" ? "noConditions" : "noConditionsAny")}
         </p>
       )}
       <div className="flex flex-wrap items-center gap-2">
@@ -387,7 +388,7 @@ function CallNode({ path, node }: { path: Path; node: Call }) {
     <fieldset
       aria-label={textIn(rule?.label, lang, node.name)}
       aria-describedby={problem.text ? problem.id : undefined}
-      className={`flex flex-wrap items-center gap-2 rounded-[5px] ${problem.text ? "bg-danger-soft p-1" : ""}`}
+      className={`inline-flex max-w-full flex-wrap items-center gap-2 rounded-[5px] align-middle leading-normal ${problem.text ? "bg-danger-soft p-1" : ""}`}
     >
       <button
         type="button"
@@ -508,5 +509,75 @@ function ParamControl({
       {control}
       {problem.text && <ProblemText id={problem.id}>{problem.text}</ProblemText>}
     </span>
+  );
+}
+
+// -----------------------
+// cases and roots
+// -----------------------
+
+/** A case's name, its move buttons and its remove button, the same in every look. */
+export function CaseTools({ path, index, count }: { path: Path; index: number; count: number }) {
+  const { lang, tree, change } = useEditor();
+  const { branches } = at(tree, path) as Ruleset;
+
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        aria-label={`${t(lang, "caseLabel")} ${index + 1}`}
+        placeholder={t(lang, "caseLabel")}
+        dir="auto"
+        className={`${SMALL_INPUT} min-w-0 flex-1`}
+        value={branches[index]?.label ?? ""}
+        onChange={(e) => change(setLabel(tree, path, index, e.target.value))}
+      />
+      <button
+        type="button"
+        className={ICON_BUTTON}
+        aria-label={`${t(lang, "moveUp")} ${index + 1}`}
+        disabled={index === 0}
+        onClick={() => change(moveBranch(tree, path, index, index - 1))}
+      >
+        <Icon name="up" />
+      </button>
+      <button
+        type="button"
+        className={ICON_BUTTON}
+        aria-label={`${t(lang, "moveDown")} ${index + 1}`}
+        disabled={index === count - 1}
+        onClick={() => change(moveBranch(tree, path, index, index + 1))}
+      >
+        <Icon name="down" />
+      </button>
+      <button
+        type="button"
+        className={REMOVE_BUTTON}
+        aria-label={`${t(lang, "remove")} ${index + 1}`}
+        onClick={() => change(removeBranch(tree, path, index))}
+      >
+        <Icon name="x" />
+      </button>
+    </div>
+  );
+}
+
+/** A look: how it draws a ruleset body and a condition; values are the same in every look. */
+export type Look = {
+  Rules: ComponentType<{ path: Path }>;
+  Condition: ComponentType<{ path: Path }>;
+};
+
+/** The document's root in the look the editor holds. */
+export function Root({ kind, Condition }: { kind: Kind; Condition: Look["Condition"] }) {
+  const { Rules } = useEditor();
+
+  if (kind === "ruleset") return <Rules path={[]} />;
+
+  if (kind === "predicate") return <Condition path={[]} />;
+
+  return (
+    <div className="flex flex-wrap items-center">
+      <ValueNode path={[]} />
+    </div>
   );
 }

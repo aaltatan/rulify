@@ -1,24 +1,11 @@
 // The rail look: a ruleset's cases hung in order off a line down the start edge, each "if" its
-// condition "then" its value, closed by "otherwise". A predicate or formula root is its node.
+// condition "then" its value, closed by "otherwise".
 
 import { t } from "../../core/i18n.ts";
-import type { Kind } from "../../core/reader.ts";
-import { addBranch, moveBranch, type Ruleset, removeBranch, setLabel } from "../../core/ruleset.ts";
+import { addBranch, type Ruleset } from "../../core/ruleset.ts";
 import { at, type Path } from "../../core/tree.ts";
-import { ADD_BUTTON, ICON_BUTTON, Icon, REMOVE_BUTTON, SHEET, SMALL_INPUT } from "../controls.tsx";
-import { PredicateNode, Problem, useEditor, ValueNode } from "../nodes.tsx";
-
-export function RailLook({ kind }: { kind: Kind }) {
-  if (kind === "ruleset") return <Rail path={[]} />;
-
-  if (kind === "predicate") return <PredicateNode path={[]} />;
-
-  return (
-    <div className="flex flex-wrap items-center">
-      <ValueNode path={[]} />
-    </div>
-  );
-}
+import { ADD_BUTTON, Icon, SHEET } from "../controls.tsx";
+import { CaseTools, PredicateNode, Problem, useEditor, ValueNode } from "../nodes.tsx";
 
 /** A ruleset body at `path`: the root, or the `when` of a value node. */
 export function Rail({ path }: { path: Path }) {
@@ -28,7 +15,7 @@ export function Rail({ path }: { path: Path }) {
 
   return (
     <ol className="flex w-full flex-col gap-3 border-s border-rule-strong ps-5">
-      {branches.map((branch, index) => {
+      {branches.map((_, index) => {
         const here: Path = [...path, "branches", index];
 
         return (
@@ -44,42 +31,7 @@ export function Rail({ path }: { path: Path }) {
             >
               {index + 1}
             </span>
-            <div className="flex items-center gap-2">
-              <input
-                aria-label={`${t(lang, "caseLabel")} ${index + 1}`}
-                placeholder={t(lang, "caseLabel")}
-                dir="auto"
-                className={`${SMALL_INPUT} min-w-0 flex-1`}
-                value={branch.label ?? ""}
-                onChange={(e) => change(setLabel(tree, path, index, e.target.value))}
-              />
-              <button
-                type="button"
-                className={ICON_BUTTON}
-                aria-label={`${t(lang, "moveUp")} ${index + 1}`}
-                disabled={index === 0}
-                onClick={() => change(moveBranch(tree, path, index, index - 1))}
-              >
-                <Icon name="up" />
-              </button>
-              <button
-                type="button"
-                className={ICON_BUTTON}
-                aria-label={`${t(lang, "moveDown")} ${index + 1}`}
-                disabled={index === branches.length - 1}
-                onClick={() => change(moveBranch(tree, path, index, index + 1))}
-              >
-                <Icon name="down" />
-              </button>
-              <button
-                type="button"
-                className={REMOVE_BUTTON}
-                aria-label={`${t(lang, "remove")} ${index + 1}`}
-                onClick={() => change(removeBranch(tree, path, index))}
-              >
-                <Icon name="x" />
-              </button>
-            </div>
+            <CaseTools path={path} index={index} count={branches.length} />
             <Problem path={here} />
             <Part word={t(lang, index === 0 ? "if" : "elseIf")}>
               <PredicateNode path={[...here, "when"]} />

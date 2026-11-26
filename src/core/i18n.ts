@@ -33,6 +33,16 @@ const WORDS = {
   any: { ar: "أي مما يلي", en: "Any of" },
   readsAs: { ar: "تُقرأ", en: "Reads as" },
   byCondition: { ar: "حسب الشرط", en: "By condition" },
+  and: { ar: "و", en: "and" },
+  or: { ar: "أو", en: "or" },
+  // the looks
+  look: { ar: "الشكل", en: "Look" },
+  rail: { ar: "قائمة", en: "Rail" },
+  sentence: { ar: "جمل", en: "Sentence" },
+  tree: { ar: "شجرة", en: "Tree" },
+  start: { ar: "البداية", en: "Start" },
+  theValue: { ar: "القيمة", en: "The value" },
+  close: { ar: "أغلق", en: "Close" },
   // the shell, the rail and the palette
   kind: { ar: "ما تبنيه", en: "What you build" },
   language: { ar: "اللغة", en: "Language" },
@@ -66,6 +76,9 @@ const WORDS = {
   addCondition: { ar: "أضف شرطًا…", en: "Add a condition…" },
   addGroup: { ar: "أضف مجموعة", en: "Add a group" },
   noConditions: { ar: "لا شروط بعد: تصح دائمًا.", en: "No conditions yet: always true." },
+  // an empty "any of" group is false, as pyspecification folds it from `false`
+  noConditionsAny: { ar: "لا شروط بعد: لا تصح أبدًا.", en: "No conditions yet: never true." },
+  never: { ar: "أبدًا", en: "Never" },
   addTerm: { ar: "أضف حدًا", en: "Add a term" },
   decimals: { ar: "المنازل العشرية", en: "Decimal places" },
   number: { ar: "رقم", en: "Number" },

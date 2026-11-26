@@ -82,3 +82,10 @@ function toKey(pointer: string): string {
 
   return pathKey(steps);
 }
+
+/** Whether any problem sits on `key` (`$.branches[0]`) or on a node below it. */
+export function hasProblemsUnder(problems: Problems, key: string): boolean {
+  return Object.keys(problems).some(
+    (path) => path === key || path.startsWith(`${key}.`) || path.startsWith(`${key}[`),
+  );
+}

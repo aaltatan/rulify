@@ -51,7 +51,12 @@
   added from the rail.
 
 ## Phase 4 — Sentence and tree looks
-- [ ] Sentence look; tree look; a switch between the looks over the same data
+- [x] Sentence look; tree look; a switch between the looks over the same data (a look only
+      changes how rulesets and conditions are drawn, `Look` in `nodes.tsx`; values, calls and
+      the palette are shared, so the palette shows in every look)
+- Left for later: the sentence look's words are native selects drawn as words, not lists that
+  open in place; the tree's open node keeps its own state per ruleset and closes on a look
+  switch.
 
 ## Phase 5 — Code view
 - [ ] A JSON editor synced with the visual looks; accepts only what validates (pick the editor
